@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="엘림큐티에서 매일 새롭게 전해지는 말씀 묵상과 적용, 기도문을 확인하세요."
+    />
+    <meta name="theme-color" content="#f8f6f1" />
+    <meta name="author" content="ELIM QT" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ELIM QT" />
+    <meta property="og:title" content="엘림큐티 - 말씀 묵상" />
+    <meta
+      property="og:description"
+      content="매일 새롭게 전해지는 말씀 묵상, 질문, 적용과 기도."
+    />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="엘림큐티 - 말씀 묵상" />
+    <meta
+      name="twitter:description"
+      content="매일 새롭게 전해지는 말씀 묵상, 질문, 적용과 기도."
+    />
+    <title>말씀 묵상</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px 20px 96px;
+        background: #f8f6f1;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #333;
+        line-height: 1.8;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes softPop {
+        0% {
+          opacity: 0;
+          transform: scale(0.92);
+        }
+
+        70% {
+          opacity: 1;
+          transform: scale(1.03);
+        }
+
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0;
+      }
+
+      .header {
+        text-align: left;
+        margin-top: 40px;
+        margin-bottom: 34px;
+      }
+
+      .header h1,
+      .header p {
+        animation: fadeUp 1400ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+      }
+
+      .header p {
+        margin-top: 10px;
+        color: #777;
+        animation-delay: 180ms;
+      }
+
+      .music-dock {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 20;
+        animation: fadeIn 1400ms 700ms ease both;
+      }
+
+      .music-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 9px 16px 9px 10px;
+        border: 1px solid #e3d8c5;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #5f4a35;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 14px 36px rgba(99, 74, 42, 0.18);
+        transition:
+          background 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .music-toggle:hover {
+        background: #fff;
+        border-color: #d5bf97;
+        box-shadow: 0 18px 42px rgba(99, 74, 42, 0.22);
+        transform: translateY(-2px);
+      }
+
+      .music-toggle:focus-visible {
+        outline: 3px solid rgba(201, 169, 110, 0.4);
+        outline-offset: 3px;
+      }
+
+      .music-toggle.is-playing {
+        background: #6d4c41;
+        border-color: #6d4c41;
+        color: #fff;
+      }
+
+      .music-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #c9a96e;
+        color: #fff;
+        font-size: 12px;
+        line-height: 1;
+      }
+
+      .music-toggle.is-playing .music-icon {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 1450ms cubic-bezier(0.2, 0.75, 0.2, 1),
+          transform 1450ms cubic-bezier(0.2, 0.75, 0.2, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .date {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      .title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 28px;
+      }
+
+      .verse-reference {
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: #6d4c41;
+      }
+
+      .content-divider {
+        height: 1px;
+        margin: 0 0 18px;
+        border: 0;
+        background: #eadfce;
+      }
+
+      .verse {
+        display: grid;
+        gap: 14px;
+        padding: 0 0 20px;
+        margin-bottom: 0;
+      }
+
+      .verse-row {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        column-gap: 22px;
+        align-items: start;
+      }
+
+      .verse-number {
+        color: #9a7b4f;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.7;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .verse-text {
+        min-width: 0;
+        color: #3f3a34;
+        white-space: pre-wrap;
+      }
+
+      .section {
+        margin-bottom: 35px;
+        padding-top: 28px;
+        border-top: 1px solid #eee7da;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: #4a4036;
+      }
+
+      .complete-action {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 4px;
+      }
+
+      .complete-button,
+      .save-button,
+      .share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 20px;
+        border: 0;
+        border-radius: 999px;
+        background: #6d4c41;
+        color: #fff;
+        font: inherit;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 12px 28px rgba(109, 76, 65, 0.22);
+        transition:
+          background 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .save-button {
+        border: 1px solid #e3d8c5;
+        background: #faf8f2;
+        color: #5f4a35;
+        box-shadow: none;
+      }
+
+      .share-button {
+        border: 1px solid #d7c6aa;
+        background: #fff;
+        color: #5f4a35;
+        box-shadow: 0 8px 20px rgba(99, 74, 42, 0.08);
+      }
+
+      .complete-button:hover {
+        background: #5b4037;
+        box-shadow: 0 16px 34px rgba(109, 76, 65, 0.28);
+        transform: translateY(-1px);
+      }
+
+      .save-button:hover,
+      .share-button:hover {
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(99, 74, 42, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .complete-button:disabled,
+      .save-button:disabled,
+      .share-button:disabled {
+        cursor: wait;
+        opacity: 0.68;
+        transform: none;
+      }
+
+      .complete-button:focus-visible,
+      .save-button:focus-visible,
+      .share-button:focus-visible,
+      .modal-close:focus-visible {
+        outline: 3px solid rgba(201, 169, 110, 0.45);
+        outline-offset: 3px;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(43, 35, 28, 0.32);
+        opacity: 0;
+        pointer-events: none;
+        backdrop-filter: blur(0);
+        transition:
+          opacity 420ms ease,
+          backdrop-filter 420ms ease;
+      }
+
+      .modal-overlay.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        backdrop-filter: blur(5px);
+      }
+
+      .completion-modal {
+        width: min(100%, 520px);
+        padding: 24px;
+        border-radius: 20px 20px 16px 16px;
+        background: #fff;
+        text-align: center;
+        box-shadow: 0 -18px 50px rgba(43, 35, 28, 0.22);
+        opacity: 0;
+        transform: translateY(44px) scale(0.985);
+        transition:
+          opacity 520ms ease,
+          transform 520ms cubic-bezier(0.2, 0.75, 0.2, 1);
+      }
+
+      .modal-overlay.is-open .completion-modal {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .lottie-box {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 10px;
+      }
+
+      .modal-overlay.is-open .lottie-box {
+        animation: softPop 1100ms 220ms ease both;
+      }
+
+      .modal-overlay.is-open .completion-title {
+        animation: fadeUp 1000ms 360ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      .modal-overlay.is-open .completion-message {
+        animation: fadeUp 1000ms 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      .modal-overlay.is-open .modal-close {
+        animation: fadeUp 1000ms 680ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      .lottie-fallback {
+        display: grid;
+        place-items: center;
+        width: 180px;
+        height: 180px;
+        font-size: 72px;
+      }
+
+      .completion-title {
+        margin: 0 0 8px;
+        font-size: 24px;
+        line-height: 1.35;
+        color: #2f2925;
+      }
+
+      .completion-message {
+        margin: 0 0 22px;
+        color: #6f665c;
+      }
+
+      .modal-close {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid #e3d8c5;
+        border-radius: 999px;
+        background: #faf8f2;
+        color: #5f4a35;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      li {
+        margin-bottom: 10px;
+      }
+
+      .loading {
+        text-align: left;
+        margin-top: 100px;
+        color: #777;
+      }
+
+      .footer {
+        text-align: left;
+        margin-top: 50px;
+        color: #999;
+        font-size: 14px;
+        animation: fadeUp 1400ms 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 1ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .card {
+          padding: 20px;
+        }
+
+        .title {
+          font-size: 24px;
+        }
+
+        .header h1 {
+          font-size: 26px;
+        }
+
+        .music-dock {
+          right: 50%;
+          bottom: 18px;
+          transform: translateX(50%);
+        }
+
+        .music-toggle {
+          min-height: 46px;
+          padding-right: 14px;
+          box-shadow: 0 12px 30px rgba(99, 74, 42, 0.18);
+        }
+
+        .complete-action {
+          flex-direction: column;
+        }
+
+        .complete-button,
+        .save-button,
+        .share-button {
+          width: 100%;
+        }
+
+        .modal-overlay {
+          padding: 12px;
+        }
+
+        .completion-modal {
+          padding: 22px 20px;
+        }
+
+        .verse-row {
+          grid-template-columns: 32px 1fr;
+          column-gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📖 말씀 묵상</h1>
+        <p>🌿 매일 새롭게 전해지는 QT</p>
+      </div>
+
+      <div id="content" class="loading">불러오는 중...</div>
+
+      <div class="footer">© ELIM QT</div>
+    </div>
+
+    <div class="music-dock">
+      <button
+        id="musicToggle"
+        class="music-toggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="배경 음악 재생"
+      >
+        <span class="music-icon" aria-hidden="true">▶</span>
+        <span class="music-label">배경 음악</span>
+      </button>
+    </div>
+
+    <audio id="backgroundMusic" src="./background.mp3" preload="auto" loop></audio>
+
+    <div
+      id="completionOverlay"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="completionTitle"
+      hidden
+    >
+      <div class="completion-modal">
+        <div id="completionLottie" class="lottie-box" aria-hidden="true"></div>
+        <h2 id="completionTitle" class="completion-title">
+          오늘의 큐티를 완료하였습니다
+        </h2>
+        <p class="completion-message">
+          내일도 엘림큐티에서 만나요.
+        </p>
+        <button id="completionClose" class="modal-close" type="button">
+          닫기
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+      const backgroundMusic = document.getElementById("backgroundMusic");
+      const musicToggle = document.getElementById("musicToggle");
+      const musicIcon = musicToggle.querySelector(".music-icon");
+      const musicLabel = musicToggle.querySelector(".music-label");
+      const completionOverlay = document.getElementById("completionOverlay");
+      const completionClose = document.getElementById("completionClose");
+      const completionLottie = document.getElementById("completionLottie");
+      let completionAnimation;
+
+      function setMusicState(isPlaying) {
+        musicToggle.classList.toggle("is-playing", isPlaying);
+        musicToggle.setAttribute("aria-pressed", String(isPlaying));
+        musicToggle.setAttribute(
+          "aria-label",
+          isPlaying ? "배경 음악 정지" : "배경 음악 재생",
+        );
+        musicIcon.textContent = isPlaying ? "Ⅱ" : "▶";
+        musicLabel.textContent = isPlaying ? "음악 재생 중" : "배경 음악";
+      }
+
+      musicToggle.addEventListener("click", async () => {
+        if (backgroundMusic.paused) {
+          try {
+            await backgroundMusic.play();
+            setMusicState(true);
+          } catch (error) {
+            setMusicState(false);
+            console.error(error);
+          }
+          return;
+        }
+
+        backgroundMusic.pause();
+        setMusicState(false);
+      });
+
+      backgroundMusic.addEventListener("ended", () => setMusicState(false));
+
+      function showLottieFallback() {
+        completionLottie.innerHTML =
+          '<div class="lottie-fallback" aria-hidden="true">🎉</div>';
+      }
+
+      function loadCompletionAnimation() {
+        if (completionAnimation) {
+          completionAnimation.goToAndPlay(0, true);
+          return;
+        }
+
+        if (!window.lottie) {
+          showLottieFallback();
+          return;
+        }
+
+        completionAnimation = window.lottie.loadAnimation({
+          container: completionLottie,
+          renderer: "svg",
+          loop: false,
+          autoplay: true,
+          path: "./congrat.json",
+        });
+
+        completionAnimation.addEventListener("data_failed", showLottieFallback);
+      }
+
+      function openCompletionModal() {
+        completionOverlay.hidden = false;
+        requestAnimationFrame(() => {
+          completionOverlay.classList.add("is-open");
+          loadCompletionAnimation();
+          completionClose.focus();
+        });
+      }
+
+      function closeCompletionModal() {
+        completionOverlay.classList.remove("is-open");
+        window.setTimeout(() => {
+          completionOverlay.hidden = true;
+        }, 520);
+      }
+
+      completionClose.addEventListener("click", closeCompletionModal);
+
+      completionOverlay.addEventListener("click", (event) => {
+        if (event.target === completionOverlay) {
+          closeCompletionModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !completionOverlay.hidden) {
+          closeCompletionModal();
+        }
+      });
+
+      function renderVerses(bible) {
+        const verses =
+          Array.isArray(bible.verses) && bible.verses.length > 0
+            ? bible.verses
+            : [{ verse: "", text: bible.text }];
+
+        return verses
+          .map(
+            (item) => `
+              <div class="verse-row">
+                <div class="verse-number">${item.verse ?? ""}</div>
+                <div class="verse-text">${item.text ?? ""}</div>
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      function revealContent() {
+        const revealItems = document.querySelectorAll(".reveal");
+
+        if (!("IntersectionObserver" in window)) {
+          revealItems.forEach((item) => item.classList.add("is-visible"));
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) {
+                return;
+              }
+
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            });
+          },
+          {
+            rootMargin: "0px 0px -12% 0px",
+            threshold: 0.12,
+          },
+        );
+
+        revealItems.forEach((item, index) => {
+          item.style.setProperty("--reveal-delay", `${Math.min(index, 3) * 90}ms`);
+          observer.observe(item);
+        });
+      }
+
+      async function saveQTImage() {
+        const card = document.getElementById("qtCard");
+        const saveButton = document.getElementById("saveButton");
+
+        if (!card || !window.html2canvas) {
+          alert("이미지 저장 기능을 불러오지 못했습니다.");
+          return;
+        }
+
+        const previousLabel = saveButton.textContent;
+        saveButton.disabled = true;
+        saveButton.textContent = "저장 중...";
+
+        try {
+          card.classList.add("is-capturing");
+          card.querySelectorAll(".reveal").forEach((item) => {
+            item.classList.add("is-visible");
+          });
+
+          const canvas = await window.html2canvas(card, {
+            backgroundColor: "#ffffff",
+            scale: Math.min(window.devicePixelRatio || 1, 2),
+            useCORS: true,
+            ignoreElements: (element) =>
+              element.hasAttribute("data-html2canvas-ignore"),
+          });
+
+          const imageUrl = canvas.toDataURL("image/jpeg", 0.92);
+          const link = document.createElement("a");
+          link.href = imageUrl;
+          link.download = `elim-qt-${new Date().toISOString().slice(0, 10)}.jpg`;
+          link.click();
+        } catch (error) {
+          console.error(error);
+          alert("이미지를 저장하지 못했습니다.");
+        } finally {
+          card.classList.remove("is-capturing");
+          saveButton.disabled = false;
+          saveButton.textContent = previousLabel;
+        }
+      }
+
+      async function shareQT() {
+        const shareButton = document.getElementById("shareButton");
+        const title = "엘림큐티 - 말씀 묵상";
+        const text = "오늘의 말씀 묵상을 함께 나눠요.";
+        const url = window.location.href;
+
+        if (!shareButton) {
+          return;
+        }
+
+        const previousLabel = shareButton.textContent;
+
+        try {
+          if (navigator.share) {
+            await navigator.share({ title, text, url });
+            return;
+          }
+
+          await navigator.clipboard.writeText(url);
+          shareButton.textContent = "링크 복사됨";
+          window.setTimeout(() => {
+            shareButton.textContent = previousLabel;
+          }, 1600);
+        } catch (error) {
+          if (error.name === "AbortError") {
+            return;
+          }
+
+          console.error(error);
+          alert("공유하지 못했습니다.");
+        }
+      }
+
+      async function loadQT() {
+        try {
+          const response = await fetch("./qt.json?" + Date.now());
+          const qt = await response.json();
+
+          document.getElementById("content").innerHTML = `
+      <div id="qtCard" class="card reveal">
+
+        <div class="date reveal">${qt.date}</div>
+
+        <div class="title reveal">
+          ${qt.title}
+        </div>
+
+        <div class="verse-reference reveal">
+          ${qt.bible.reference}
+        </div>
+
+        <hr class="content-divider reveal" />
+
+        <div class="verse reveal">
+          ${renderVerses(qt.bible)}
+        </div>
+
+        <hr class="content-divider reveal" />
+
+        <div class="section reveal">
+          <div class="section-title">💭 묵상하기</div>
+          <div>${qt.meditation}</div>
+        </div>
+
+        <div class="section reveal">
+          <div class="section-title">❓ 질문하기</div>
+
+          <ul>
+            ${qt.questions.map((q) => `<li>${q}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="section reveal">
+          <div class="section-title">📝 적용하기</div>
+          <div>${qt.application}</div>
+        </div>
+
+        <div class="section reveal">
+          <div class="section-title">🙏 기도하기</div>
+          <div>${qt.prayer}</div>
+        </div>
+
+        <div class="complete-action reveal" data-html2canvas-ignore="true">
+          <button id="completeButton" class="complete-button" type="button">
+            완료하기
+          </button>
+          <button id="saveButton" class="save-button" type="button">
+            보관하기
+          </button>
+          <button id="shareButton" class="share-button" type="button">
+            공유하기
+          </button>
+        </div>
+
+      </div>
+    `;
+
+          document
+            .getElementById("completeButton")
+            .addEventListener("click", openCompletionModal);
+          document
+            .getElementById("saveButton")
+            .addEventListener("click", saveQTImage);
+          document
+            .getElementById("shareButton")
+            .addEventListener("click", shareQT);
+          revealContent();
+        } catch (error) {
+          document.getElementById("content").innerHTML = `
+      <div class="card">
+        QT를 불러오지 못했습니다.
+      </div>
+    `;
+
+          console.error(error);
+        }
+      }
+
+      loadQT();
+    </script>
+  </body>
+</html>
