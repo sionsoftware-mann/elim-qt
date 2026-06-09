@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qt.elimsion.com/sitemap.xml
