@@ -23,6 +23,10 @@
       name="twitter:description"
       content="매일 새롭게 전해지는 말씀 묵상, 적용과 기도 포인트."
     />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>말씀 묵상</title>
 
     <style>
@@ -541,7 +545,12 @@
       </button>
     </div>
 
-    <audio id="backgroundMusic" src="./background.mp3" preload="auto" loop></audio>
+    <audio
+      id="backgroundMusic"
+      src="./background.mp3"
+      preload="auto"
+      loop
+    ></audio>
 
     <div
       id="completionOverlay"
@@ -556,9 +565,7 @@
         <h2 id="completionTitle" class="completion-title">
           오늘의 큐티를 완료하였습니다
         </h2>
-        <p class="completion-message">
-          내일도 엘림큐티에서 만나요.
-        </p>
+        <p class="completion-message">내일도 엘림큐티에서 만나요.</p>
         <button id="completionClose" class="modal-close" type="button">
           닫기
         </button>
@@ -720,7 +727,10 @@
         );
 
         revealItems.forEach((item, index) => {
-          item.style.setProperty("--reveal-delay", `${Math.min(index, 3) * 90}ms`);
+          item.style.setProperty(
+            "--reveal-delay",
+            `${Math.min(index, 3) * 90}ms`,
+          );
           observer.observe(item);
         });
       }
