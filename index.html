@@ -14,14 +14,14 @@
     <meta property="og:title" content="엘림큐티 - 말씀 묵상" />
     <meta
       property="og:description"
-      content="매일 새롭게 전해지는 말씀 묵상, 질문, 적용과 기도."
+      content="매일 새롭게 전해지는 말씀 묵상, 적용과 기도 포인트."
     />
     <meta property="og:locale" content="ko_KR" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="엘림큐티 - 말씀 묵상" />
     <meta
       name="twitter:description"
-      content="매일 새롭게 전해지는 말씀 묵상, 질문, 적용과 기도."
+      content="매일 새롭게 전해지는 말씀 묵상, 적용과 기도 포인트."
     />
     <title>말씀 묵상</title>
 
@@ -243,6 +243,10 @@
       .verse-text {
         min-width: 0;
         color: #3f3a34;
+        white-space: pre-wrap;
+      }
+
+      .text-block {
         white-space: pre-wrap;
       }
 
@@ -678,6 +682,18 @@
           .join("");
       }
 
+      function renderList(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+          return "";
+        }
+
+        return `
+          <ul>
+            ${items.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        `;
+      }
+
       function revealContent() {
         const revealItems = document.querySelectorAll(".reveal");
 
@@ -788,18 +804,19 @@
         try {
           const response = await fetch("./qt.json?" + Date.now());
           const qt = await response.json();
+          const bibleReference = qt.bible?.reference || qt.verseAddress || "";
 
           document.getElementById("content").innerHTML = `
       <div id="qtCard" class="card reveal">
 
-        <div class="date reveal">${qt.date}</div>
+        ${qt.date ? `<div class="date reveal">${qt.date}</div>` : ""}
 
         <div class="title reveal">
           ${qt.title}
         </div>
 
         <div class="verse-reference reveal">
-          ${qt.bible.reference}
+          ${bibleReference}
         </div>
 
         <hr class="content-divider reveal" />
@@ -812,25 +829,22 @@
 
         <div class="section reveal">
           <div class="section-title">💭 묵상하기</div>
-          <div>${qt.meditation}</div>
-        </div>
-
-        <div class="section reveal">
-          <div class="section-title">❓ 질문하기</div>
-
-          <ul>
-            ${qt.questions.map((q) => `<li>${q}</li>`).join("")}
-          </ul>
+          <div class="text-block">${qt.meditation}</div>
         </div>
 
         <div class="section reveal">
           <div class="section-title">📝 적용하기</div>
-          <div>${qt.application}</div>
+          ${Array.isArray(qt.application) ? renderList(qt.application) : `<div>${qt.application}</div>`}
+        </div>
+
+        <div class="section reveal">
+          <div class="section-title">🙏 기도 포인트</div>
+          ${renderList(qt.prays)}
         </div>
 
         <div class="section reveal">
           <div class="section-title">🙏 기도하기</div>
-          <div>${qt.prayer}</div>
+          <div class="text-block">${qt.prayer}</div>
         </div>
 
         <div class="complete-action reveal" data-html2canvas-ignore="true">
