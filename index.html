@@ -126,6 +126,50 @@
         animation-delay: 180ms;
       }
 
+      .main-nav {
+        display: inline-flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding: 5px;
+        border: 1px solid #e8ddcd;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.65);
+        animation: fadeUp 1400ms 300ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+      }
+
+      .nav-button {
+        min-height: 38px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #6f665c;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          background 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .nav-button:hover {
+        background: rgba(255, 255, 255, 0.82);
+        color: #4f3c32;
+      }
+
+      .nav-button.is-active {
+        background: #6d4c41;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(109, 76, 65, 0.18);
+      }
+
+      .nav-button:focus-visible {
+        outline: 3px solid rgba(201, 169, 110, 0.45);
+        outline-offset: 3px;
+      }
+
       .music-dock {
         position: fixed;
         right: 24px;
@@ -461,6 +505,78 @@
         margin-bottom: 10px;
       }
 
+      .archive-header {
+        margin-bottom: 18px;
+      }
+
+      .archive-title {
+        margin: 0 0 4px;
+        color: #2f2925;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      .archive-description {
+        margin: 0;
+        color: #777;
+        font-size: 14px;
+      }
+
+      .archive-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .archive-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        width: 100%;
+        min-height: 68px;
+        padding: 14px 16px;
+        border: 1px solid #eee7da;
+        border-radius: 14px;
+        background: #fff;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .archive-item:hover {
+        border-color: #d7c6aa;
+        box-shadow: 0 10px 24px rgba(99, 74, 42, 0.08);
+        transform: translateY(-1px);
+      }
+
+      .archive-item:focus-visible {
+        outline: 3px solid rgba(201, 169, 110, 0.45);
+        outline-offset: 3px;
+      }
+
+      .archive-item-title {
+        display: block;
+        color: #3f3a34;
+        font-weight: 800;
+      }
+
+      .archive-item-date {
+        display: block;
+        color: #888;
+        font-size: 13px;
+      }
+
+      .archive-item-arrow {
+        flex: 0 0 auto;
+        color: #9a7b4f;
+        font-weight: 900;
+      }
+
       .loading {
         text-align: left;
         margin-top: 100px;
@@ -521,6 +637,20 @@
           width: 100%;
         }
 
+        .main-nav {
+          display: flex;
+          width: 100%;
+        }
+
+        .nav-button {
+          flex: 1;
+          padding: 0 10px;
+        }
+
+        .archive-item {
+          align-items: flex-start;
+        }
+
         .modal-overlay {
           padding: 12px;
         }
@@ -542,6 +672,20 @@
         <h1>📖 말씀 묵상</h1>
         <p>🌿 매일 새롭게 전해지는 QT</p>
       </div>
+
+      <nav class="main-nav" aria-label="큐티 메뉴">
+        <button
+          id="todayNav"
+          class="nav-button is-active"
+          type="button"
+          aria-current="page"
+        >
+          오늘 큐티
+        </button>
+        <button id="archiveNav" class="nav-button" type="button">
+          지난 큐티보기
+        </button>
+      </nav>
 
       <div id="content" class="loading">불러오는 중...</div>
 
@@ -599,7 +743,11 @@
       const completionOverlay = document.getElementById("completionOverlay");
       const completionClose = document.getElementById("completionClose");
       const completionLottie = document.getElementById("completionLottie");
+      const content = document.getElementById("content");
+      const todayNav = document.getElementById("todayNav");
+      const archiveNav = document.getElementById("archiveNav");
       let completionAnimation;
+      let currentQTDate = "";
 
       function setMusicState(isPlaying) {
         musicToggle.classList.toggle("is-playing", isPlaying);
@@ -717,6 +865,15 @@
         `;
       }
 
+      function setActiveNav(view) {
+        const isArchive = view === "archive";
+
+        todayNav.classList.toggle("is-active", !isArchive);
+        archiveNav.classList.toggle("is-active", isArchive);
+        todayNav.setAttribute("aria-current", isArchive ? "false" : "page");
+        archiveNav.setAttribute("aria-current", isArchive ? "page" : "false");
+      }
+
       function revealContent() {
         const revealItems = document.querySelectorAll(".reveal");
 
@@ -781,7 +938,7 @@
           const imageUrl = canvas.toDataURL("image/jpeg", 0.92);
           const link = document.createElement("a");
           link.href = imageUrl;
-          link.download = `elim-qt-${new Date().toISOString().slice(0, 10)}.jpg`;
+          link.download = `elim-qt-${currentQTDate || new Date().toISOString().slice(0, 10)}.jpg`;
           link.click();
         } catch (error) {
           console.error(error);
@@ -796,7 +953,9 @@
       async function shareQT() {
         const shareButton = document.getElementById("shareButton");
         const title = "엘림큐티 - 말씀 묵상";
-        const text = "오늘의 말씀 묵상을 함께 나눠요.";
+        const text = currentQTDate
+          ? `${currentQTDate} 말씀 묵상을 함께 나눠요.`
+          : "오늘의 말씀 묵상을 함께 나눠요.";
         const url = window.location.href;
 
         if (!shareButton) {
@@ -826,13 +985,12 @@
         }
       }
 
-      async function loadQT() {
-        try {
-          const response = await fetch("./qt.json?" + Date.now());
-          const qt = await response.json();
-          const bibleReference = qt.bible?.reference || qt.verseAddress || "";
+      function renderQT(qt, options = {}) {
+        const bibleReference = qt.bible?.reference || qt.verseAddress || "";
+        const showCompleteButton = options.showCompleteButton !== false;
+        currentQTDate = qt.date || "";
 
-          document.getElementById("content").innerHTML = `
+        content.innerHTML = `
       <div id="qtCard" class="card reveal">
 
         ${qt.date ? `<div class="date reveal">${qt.date}</div>` : ""}
@@ -874,9 +1032,13 @@
         </div>
 
         <div class="complete-action reveal" data-html2canvas-ignore="true">
-          <button id="completeButton" class="complete-button" type="button">
+          ${
+            showCompleteButton
+              ? `<button id="completeButton" class="complete-button" type="button">
             완료하기
-          </button>
+          </button>`
+              : ""
+          }
           <button id="saveButton" class="save-button" type="button">
             보관하기
           </button>
@@ -888,18 +1050,40 @@
       </div>
     `;
 
-          document
-            .getElementById("completeButton")
-            .addEventListener("click", openCompletionModal);
-          document
-            .getElementById("saveButton")
-            .addEventListener("click", saveQTImage);
-          document
-            .getElementById("shareButton")
-            .addEventListener("click", shareQT);
-          revealContent();
+        const completeButton = document.getElementById("completeButton");
+
+        if (completeButton) {
+          completeButton.addEventListener("click", openCompletionModal);
+        }
+
+        document
+          .getElementById("saveButton")
+          .addEventListener("click", saveQTImage);
+        document
+          .getElementById("shareButton")
+          .addEventListener("click", shareQT);
+        revealContent();
+      }
+
+      async function loadQT(source = "./qt.json", options = {}) {
+        try {
+          content.className = "loading";
+          content.textContent = "불러오는 중...";
+
+          const response = await fetch(
+            `${source}${source.includes("?") ? "&" : "?"}${Date.now()}`,
+          );
+
+          if (!response.ok) {
+            throw new Error(`QT fetch failed: ${response.status}`);
+          }
+
+          const qt = await response.json();
+          content.className = "";
+          renderQT(qt, options);
         } catch (error) {
-          document.getElementById("content").innerHTML = `
+          content.className = "";
+          content.innerHTML = `
       <div class="card">
         QT를 불러오지 못했습니다.
       </div>
@@ -909,7 +1093,149 @@
         }
       }
 
-      loadQT();
+      async function loadArchiveList() {
+        setActiveNav("archive");
+        currentQTDate = "";
+        content.className = "loading";
+        content.textContent = "불러오는 중...";
+
+        try {
+          const response = await fetch(`./archive/index.json?${Date.now()}`);
+
+          if (!response.ok) {
+            throw new Error(`Archive fetch failed: ${response.status}`);
+          }
+
+          const archiveItems = await response.json();
+
+          if (!Array.isArray(archiveItems) || archiveItems.length === 0) {
+            content.className = "";
+            content.innerHTML = `
+      <div class="card">
+        아직 지난 큐티가 없습니다.
+      </div>
+    `;
+            return;
+          }
+
+          const visibleArchiveItems = archiveItems.slice(0, 30);
+
+          content.className = "";
+          content.innerHTML = `
+      <div class="card reveal">
+        <div class="archive-header">
+          <h2 class="archive-title">지난 큐티보기</h2>
+          <p class="archive-description">날짜를 선택하면 지난 말씀 묵상을 볼 수 있습니다.</p>
+        </div>
+        <div class="archive-list">
+          ${visibleArchiveItems
+            .map(
+              (item) => `
+                <button
+                  class="archive-item"
+                  type="button"
+                  data-file="${item.file}"
+                  data-date="${item.date}"
+                >
+                  <span>
+                    <span class="archive-item-title">${item.title}</span>
+                    <span class="archive-item-date">${item.date}</span>
+                  </span>
+                  <span class="archive-item-arrow" aria-hidden="true">›</span>
+                </button>
+              `,
+            )
+            .join("")}
+        </div>
+      </div>
+    `;
+
+          document.querySelectorAll(".archive-item").forEach((item) => {
+            item.addEventListener("click", () => {
+              window.location.hash = `archive/${item.dataset.date}`;
+            });
+          });
+
+          revealContent();
+        } catch (error) {
+          content.className = "";
+          content.innerHTML = `
+      <div class="card">
+        지난 큐티 목록을 불러오지 못했습니다.
+      </div>
+    `;
+
+          console.error(error);
+        }
+      }
+
+      async function loadArchiveQT(file) {
+        if (!file || file.includes("/") || file.includes("..")) {
+          await loadArchiveList();
+          return;
+        }
+
+        setActiveNav("archive");
+        await loadQT(`./archive/${file}`, { showCompleteButton: false });
+      }
+
+      async function loadArchiveQTByDate(date) {
+        try {
+          const response = await fetch(`./archive/index.json?${Date.now()}`);
+
+          if (!response.ok) {
+            throw new Error(`Archive fetch failed: ${response.status}`);
+          }
+
+          const archiveItems = await response.json();
+          const item = archiveItems.find((archiveItem) => archiveItem.date === date);
+
+          if (!item) {
+            await loadArchiveList();
+            return;
+          }
+
+          await loadArchiveQT(item.file);
+        } catch (error) {
+          console.error(error);
+          await loadArchiveList();
+        }
+      }
+
+      function loadTodayQT() {
+        setActiveNav("today");
+        window.history.replaceState(null, "", window.location.pathname);
+        loadQT("./qt.json", { showCompleteButton: true });
+      }
+
+      function loadRoute() {
+        if (window.location.hash === "#archive") {
+          loadArchiveList();
+          return;
+        }
+
+        const archiveMatch = window.location.hash.match(/^#archive\/(.+)$/);
+
+        if (archiveMatch) {
+          loadArchiveQTByDate(decodeURIComponent(archiveMatch[1]));
+          return;
+        }
+
+        loadTodayQT();
+      }
+
+      todayNav.addEventListener("click", loadTodayQT);
+      archiveNav.addEventListener("click", () => {
+        if (window.location.hash === "#archive") {
+          loadArchiveList();
+          return;
+        }
+
+        window.location.hash = "archive";
+      });
+      window.addEventListener("hashchange", loadRoute);
+
+      loadRoute();
     </script>
   </body>
 </html>
