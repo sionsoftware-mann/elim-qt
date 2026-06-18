@@ -577,6 +577,121 @@
         font-weight: 900;
       }
 
+      .product-section {
+        margin-top: 18px;
+        padding: 24px;
+        border: 1px solid #eee7da;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.74);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+      }
+
+      .product-header {
+        margin-bottom: 16px;
+      }
+
+      .product-title {
+        margin: 0 0 4px;
+        color: #2f2925;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .product-description {
+        margin: 0;
+        color: #777;
+        font-size: 13px;
+      }
+
+      .product-grid {
+        display: block;
+      }
+
+      .product-card {
+        display: block;
+        min-width: 0;
+        padding: 12px;
+        border: 1px solid #eee7da;
+        border-radius: 16px;
+        background: #fff;
+        color: inherit;
+        text-decoration: none;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .product-card:hover {
+        border-color: #d7c6aa;
+        box-shadow: 0 12px 26px rgba(99, 74, 42, 0.09);
+        transform: translateY(-1px);
+      }
+
+      .product-card:focus-visible {
+        outline: 3px solid rgba(201, 169, 110, 0.45);
+        outline-offset: 3px;
+      }
+
+      .product-image {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        height: auto;
+        border-radius: 12px;
+        background: #f3eee5;
+        object-fit: cover;
+      }
+
+      .product-copy {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 4px;
+        padding: 14px 4px 2px;
+      }
+
+      .product-name {
+        color: #3f3a34;
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .product-summary {
+        display: -webkit-box;
+        overflow: hidden;
+        color: #777;
+        font-size: 13px;
+        line-height: 1.45;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .product-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        min-height: 42px;
+        margin-top: 10px;
+        padding: 0 18px;
+        border-radius: 999px;
+        background: #6d4c41;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 10px 22px rgba(109, 76, 65, 0.2);
+      }
+
+      .product-disclosure {
+        margin: 14px 2px 0;
+        color: #8a8176;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
       .loading {
         text-align: left;
         margin-top: 100px;
@@ -649,6 +764,10 @@
 
         .archive-item {
           align-items: flex-start;
+        }
+
+        .product-section {
+          padding: 18px;
         }
 
         .modal-overlay {
@@ -748,6 +867,108 @@
       const archiveNav = document.getElementById("archiveNav");
       let completionAnimation;
       let currentQTDate = "";
+      const COUPANG_PRODUCTS = [
+        {
+          title: "오늘의 추천 무드등",
+          description: "무드등 불빛 아래에서 성경 읽기!",
+          url: "https://link.coupang.com/a/d7gmK1tAwm",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/0a37/906980794d2cafe2bc3fb3bef5aa2f29e3f384595f5023d0ea43ead3f01f.png",
+        },
+        {
+          title: "오늘의 추천 무드등",
+          description: "무드등 불빛 아래에서 QT 하기!",
+          url: "https://link.coupang.com/a/eutnJ4HFWm",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/6227/2e761d93637c4b49d383e21e725238e060501db64fe3c79016be8213e986.jpg",
+        },
+        {
+          title: "오늘의 추천 무드등",
+          description: "무드등 불빛 아래에서 QT 하기!",
+          url: "https://link.coupang.com/a/euttkQ5bDE",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/ca8e/ff2d2bf9875b18556add2ac185cbed77319f82a907215363c113780ad47f.png",
+        },
+        {
+          title: "오늘의 추천 무드등",
+          description: "무드등 불빛 아래에서 QT 하기!",
+          url: "https://link.coupang.com/a/eutzt6l4b6",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/af77/90e93db9493f30c2ae3a1f2a61c5b1619a1b68d89ae3e3a5f535808230ef.png",
+        },
+        {
+          title: "오늘의 추천 무드등",
+          description: "좋은 말씀 무드등!",
+          url: "https://link.coupang.com/a/eutLyWdrX3",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/d190/e9f1e8f185101dc79a84f19d22e2515b7ecfe25a95ba9d841dadf4ad3be5.jpg",
+        },
+        {
+          title: "오늘의 추천 성경책",
+          description: "개역개정 큰글씨 남녀노소 누구나",
+          url: "https://link.coupang.com/a/d7g5xC0d3I",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2025/05/15/15/0/0175eb99-08e8-4253-a8f1-267fc7deabc7.jpg",
+        },
+        {
+          title: "오늘의 추천 머그컵",
+          description: "주여, 제가 여기 있습니다",
+          url: "https://link.coupang.com/a/d7hcjhdoFo",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2016/01/14/18/6/1ede0651-824b-4d95-a419-5d794c342fc4.jpg",
+        },
+        {
+          title: "오늘의 추천 묵상 도서",
+          description: "하나님, 저 잘 살고 있나요?",
+          url: "https://link.coupang.com/a/d8DTzQrmmW",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail-product-api/A00077021/100206449/111772255/main/9791166832130_L.jpg",
+        },
+        {
+          title: "오늘의 추천 묵상 도서",
+          description: "햇살콩 말씀기도 365",
+          url: "https://link.coupang.com/a/d8EdzM8Hn2",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2023/11/06/10/9/8f30a3bd-a75d-4ada-9bf1-67cf04a19ae3.jpg",
+        },
+        {
+          title: "성경 나눔 동역 팔찌",
+          description: "햇살콩 말씀기도 365",
+          url: "https://link.coupang.com/a/eut3IgGfgy",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/dbed/354ff54174c52331d60a25b5bd62dfc9569dcb4f8a65882823d7ff41736d.png",
+        },
+        {
+          title: "복음에 눈을 뜨게 해줄",
+          description: "똥 싸면서 읽는 기독교 이야기",
+          url: "https://link.coupang.com/a/euugZJyy16",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/b5be/5d88e3c30e1f265c718690b6c56a75690562e5abd6e22372ce642d061d6d.jpg",
+        },
+        {
+          title: "예수님 미니어쳐 인형 10개",
+          description: "교회 화분 위 미소짓는 예수님",
+          url: "https://link.coupang.com/a/euun3wsfpA",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/3fdf/9b2090131cd67c9d24fdc6f7d1ea14140a01e8b28afa2f80c0663c149ebd.jpg",
+        },
+        {
+          title: "오늘도 말씀이 필요해",
+          description: "365일 매일 좋은 성경 구절 일력",
+          url: "https://link.coupang.com/a/euuFLmCGku",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2025/11/26/14/2/9c731ad7-a4fb-4f02-9be3-ab3a0ec71aa1.jpg",
+        },
+        {
+          title: "말씀 액자",
+          description: "교회 액자, 성경말씀액자, 캘리그라피",
+          url: "https://link.coupang.com/a/euu3BpXFWC",
+          image:
+            "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/971d/1580b903799f97d604707bf45c1c6b47027377553e3a18daf735a1a650a7.jpg",
+        },
+      ];
+      const recommendedProduct =
+        COUPANG_PRODUCTS[Math.floor(Math.random() * COUPANG_PRODUCTS.length)];
 
       function setMusicState(isPlaying) {
         musicToggle.classList.toggle("is-playing", isPlaying);
@@ -862,6 +1083,43 @@
           <ul>
             ${items.map((item) => `<li>${item}</li>`).join("")}
           </ul>
+        `;
+      }
+
+      function renderProductRecommendations() {
+        if (!recommendedProduct) {
+          return "";
+        }
+
+        return `
+          <section class="product-section reveal" aria-labelledby="productSectionTitle">
+            <div class="product-header">
+              <h2 id="productSectionTitle" class="product-title">🎁 오늘의 추천 상품</h2>
+            </div>
+            <div class="product-grid">
+              <a
+                class="product-card"
+                href="${recommendedProduct.url}"
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+              >
+                <img
+                  class="product-image"
+                  src="${recommendedProduct.image}"
+                  alt="${recommendedProduct.title}"
+                  loading="lazy"
+                />
+                <span class="product-copy">
+                  <span class="product-name">${recommendedProduct.title}</span>
+                  <span class="product-summary">${recommendedProduct.description}</span>
+                  <span class="product-action">상품 보러가기</span>
+                </span>
+              </a>
+            </div>
+            <p class="product-disclosure">
+              이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
+          </section>
         `;
       }
 
@@ -1048,6 +1306,8 @@
         </div>
 
       </div>
+
+      ${renderProductRecommendations()}
     `;
 
         const completeButton = document.getElementById("completeButton");
